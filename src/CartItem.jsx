@@ -1,138 +1,239 @@
+
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  removeItem,
-  updateQuantity,
-} from "./CartSlice";
+import { removeItem, updateQuantity } from "./CartSlice";
 
 function CartItem() {
   const dispatch = useDispatch();
   const items = useSelector((state) => state.cart.items);
 
   const totalQuantity = items.reduce(
-    (sum, item) => sum + item.quantity,
+    (total, item) => total + item.quantity,
     0
   );
 
   const totalCost = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (total, item) => total + item.price * item.quantity,
     0
   );
 
   return (
-    <div style={{ padding: "24px", fontFamily: "Arial, sans-serif" }}>
-      <h1>Shopping Cart</h1>
+    <main style={styles.page}>
+      <header style={styles.header}>
+        <a href="/" style={styles.brand}>Paradise Nursery</a>
+        <a href="/ProductList" style={styles.link}>Continue Shopping</a>
+      </header>
 
-      <a href="./ProductList">Continue Shopping</a>
+      <h1 style={styles.heading}>Your Shopping Cart</h1>
 
       {items.length === 0 ? (
-        <div>
+        <section style={styles.empty}>
           <h2>Your cart is empty!</h2>
-          <p>Add some beautiful plants to get started.</p>
-          <a href="./ProductList">
-            <button>Continue Shopping</button>
+          <p>Discover beautiful plants and bring some greenery home.</p>
+          <a href="/ProductList" style={styles.shopButton}>
+            Continue Shopping
           </a>
-        </div>
+        </section>
       ) : (
         <>
-          <h2>Total Items: {totalQuantity}</h2>
+          <p style={styles.count}>Total Items: {totalQuantity}</p>
 
-          {items.map((item) => (
-            <div
-              key={item.id}
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "center",
-                gap: "16px",
-                borderBottom: "1px solid #ddd",
-                padding: "16px 0",
-              }}
-            >
-              <img
-                src={item.image}
-                alt={item.name}
-                style={{
-                  width: "120px",
-                  height: "120px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                }}
-              />
+          <section>
+            {items.map((item) => (
+              <article key={item.id} style={styles.item}>
+                <img src={item.image} alt={item.name} style={styles.image} />
 
-              <div style={{ flex: 1, minWidth: "150px" }}>
-                <h3>{item.name}</h3>
-                <p>Unit Price: ${item.price.toFixed(2)}</p>
-                <p>
-                  Subtotal: ${(item.price * item.quantity).toFixed(2)}
-                </p>
-              </div>
+                <div style={styles.details}>
+                  <h2>{item.name}</h2>
+                  <p>Unit Price: ${item.price.toFixed(2)}</p>
+                  <p>
+                    Subtotal: ${(item.price * item.quantity).toFixed(2)}
+                  </p>
+                </div>
 
-              <div>
-                <button
-                  onClick={() =>
-                    dispatch(
-                      updateQuantity({
-                        id: item.id,
-                        quantity: item.quantity - 1,
-                      })
-                    )
-                  }
-                  aria-label={`Decrease ${item.name} quantity`}
-                >
-                  −
-                </button>
+                <div style={styles.controls}>
+                  <div style={styles.quantity}>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        dispatch(
+                          updateQuantity({
+                            id: item.id,
+                            quantity: item.quantity - 1,
+                          })
+                        )
+                      }
+                      aria-label={`Decrease ${item.name} quantity`}
+                    >
+                      −
+                    </button>
 
-                <span style={{ margin: "0 12px" }}>
-                  {item.quantity}
-                </span>
+                    <span>{item.quantity}</span>
 
-                <button
-                  onClick={() =>
-                    dispatch(
-                      updateQuantity({
-                        id: item.id,
-                        quantity: item.quantity + 1,
-                      })
-                    )
-                  }
-                  aria-label={`Increase ${item.name} quantity`}
-                >
-                  +
-                </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        dispatch(
+                          updateQuantity({
+                            id: item.id,
+                            quantity: item.quantity + 1,
+                          })
+                        )
+                      }
+                      aria-label={`Increase ${item.name} quantity`}
+                    >
+                      +
+                    </button>
+                  </div>
 
-                <div style={{ marginTop: "12px" }}>
                   <button
+                    type="button"
+                    style={styles.remove}
                     onClick={() => dispatch(removeItem(item.id))}
                   >
                     Remove
                   </button>
                 </div>
-              </div>
-            </div>
-          ))}
+              </article>
+            ))}
+          </section>
 
-          <h2>Total Cost: ${totalCost.toFixed(2)}</h2>
-
-          <button
-            onClick={() =>
-              alert("Thank you for shopping with Paradise Nursery!")
-            }
-            style={{
-              padding: "12px 24px",
-              backgroundColor: "#2e7d32",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            Checkout
-          </button>
+          <section style={styles.summary}>
+            <h2>Order Summary</h2>
+            <p>Total Plants: {totalQuantity}</p>
+            <h2>Total Cost: ${totalCost.toFixed(2)}</h2>
+            <button
+              type="button"
+              style={styles.checkout}
+              onClick={() =>
+                window.alert("Thank you for shopping with Paradise Nursery!")
+              }
+            >
+              Checkout
+            </button>
+            <a href="/ProductList" style={styles.continue}>
+              Continue Shopping
+            </a>
+          </section>
         </>
       )}
-    </div>
+    </main>
   );
 }
 
+const styles = {
+  page: {
+    minHeight: "100vh",
+    padding: "24px 5%",
+    fontFamily: "Arial, sans-serif",
+    backgroundColor: "#f5f8f1",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: "15px",
+    padding: "18px 24px",
+    backgroundColor: "#174d32",
+    borderRadius: "10px",
+  },
+  brand: {
+    color: "white",
+    fontSize: "24px",
+    fontWeight: "bold",
+    textDecoration: "none",
+  },
+  link: {
+    color: "white",
+    textDecoration: "none",
+    fontWeight: "bold",
+  },
+  heading: {
+    color: "#244b32",
+    marginTop: "35px",
+  },
+  count: {
+    fontWeight: "bold",
+  },
+  empty: {
+    textAlign: "center",
+    padding: "60px 20px",
+    backgroundColor: "white",
+    borderRadius: "12px",
+  },
+  shopButton: {
+    display: "inline-block",
+    padding: "12px 20px",
+    backgroundColor: "#287a46",
+    color: "white",
+    borderRadius: "6px",
+    textDecoration: "none",
+  },
+  item: {
+    display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: "20px",
+    padding: "20px",
+    marginBottom: "15px",
+    backgroundColor: "white",
+    borderRadius: "10px",
+  },
+  image: {
+    width: "130px",
+    height: "130px",
+    objectFit: "cover",
+    borderRadius: "8px",
+  },
+  details: {
+    flex: 1,
+    minWidth: "170px",
+  },
+  controls: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px",
+    alignItems: "center",
+  },
+  quantity: {
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+  },
+  remove: {
+    padding: "8px 14px",
+    color: "white",
+    backgroundColor: "#b33a3a",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+  summary: {
+    maxWidth: "400px",
+    marginLeft: "auto",
+    marginTop: "30px",
+    padding: "24px",
+    backgroundColor: "white",
+    borderRadius: "10px",
+  },
+  checkout: {
+    width: "100%",
+    padding: "13px",
+    color: "white",
+    backgroundColor: "#287a46",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
+  continue: {
+    display: "block",
+    marginTop: "15px",
+    textAlign: "center",
+    color: "#287a46",
+  },
+};
+
 export default CartItem;
+
