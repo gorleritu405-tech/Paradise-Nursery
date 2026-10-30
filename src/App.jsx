@@ -1,20 +1,26 @@
+
 import React from "react";
 import "./App.css";
 
 function App() {
   const handleGetStarted = () => {
-    window.location.href = "./ProductList";
+    window.location.href = "/ProductList";
   };
 
   return (
     <div className="landing-page">
       <div className="landing-content">
         <h1>Paradise Nursery</h1>
+
         <p>
           Welcome to Paradise Nursery, your destination for beautiful
           plants. Bring nature into your home and make every space greener.
         </p>
-        <button className="get-started" onClick={handleGetStarted}>
+
+        <button
+          className="get-started-button"
+          onClick={handleGetStarted}
+        >
           Get Started
         </button>
       </div>
